@@ -31,12 +31,14 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "cmsis_os2.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+#define CMD_BUFF_SIZE (50)
+extern osSemaphoreId_t sem1;
+extern uint8_t cmd_buff[CMD_BUFF_SIZE];
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

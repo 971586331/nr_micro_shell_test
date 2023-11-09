@@ -21,11 +21,14 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "main.h"
-#include "cmsis_os.h"
+#include "cmsis_os2.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "usart.h"
+#include <stdio.h>
+#include "nr_micro_shell.h"
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -145,8 +148,19 @@ void StartShellTask(void *argument)
   /* USER CODE BEGIN StartShellTask */
   /* Infinite loop */
 	printf("run StartShellTask\r\n");
+  sem1 = osSemaphoreNew(1, 1, NULL);
+  HAL_UARTEx_ReceiveToIdle_IT(&huart1, cmd_buff, CMD_BUFF_SIZE);
+  shell_init();
   for(;;)
   {
+    osStatus_t ret = osSemaphoreAcquire(sem1, osWaitForever);
+    if(ret == osOK) {
+      int len = strlen((const char *)cmd_buff);
+      for(int i=0; i<len; i++) {
+        shell(cmd_buff[i]);
+      }
+      memset(cmd_buff, 0, CMD_BUFF_SIZE);
+    }
     osDelay(1);
   }
   /* USER CODE END StartShellTask */

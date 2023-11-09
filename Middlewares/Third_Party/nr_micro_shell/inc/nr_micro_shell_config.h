@@ -41,8 +41,8 @@ extern "C"
 
     /* Includes ------------------------------------------------------------------*/
 #ifndef NR_MICRO_SHELL_SIMULATOR
-#include <rtconfig.h>
-#include <rtthread.h>
+// #include <rtconfig.h>
+// #include <rtthread.h>
 #endif
 
 
@@ -129,7 +129,7 @@ The end of line.
 1: \r
 2: \r\n
 */
-#define NR_SHELL_END_OF_LINE 0
+#define NR_SHELL_END_OF_LINE 1
 
 /* Weather the terminal support all ANSI codes. */
 #define NR_SHLL_FULL_ANSI 1
