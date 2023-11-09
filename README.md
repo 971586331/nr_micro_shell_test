@@ -1,0 +1,2 @@
+# nr_micro_shell_test
+nr_micro_shell测试，在stm32f1上运行
