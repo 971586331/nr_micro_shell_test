@@ -39,6 +39,7 @@ extern "C" {
 #define CMD_BUFF_SIZE (50)
 extern osSemaphoreId_t sem1;
 extern uint8_t cmd_buff[CMD_BUFF_SIZE];
+extern struct fdb_kvdb kvdb;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

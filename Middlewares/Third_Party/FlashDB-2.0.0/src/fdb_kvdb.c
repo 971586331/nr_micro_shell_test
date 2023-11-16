@@ -1738,7 +1738,7 @@ fdb_err_t fdb_kvdb_init(fdb_kvdb_t db, const char *name, const char *path, struc
         sector_iterator(db, &sector, FDB_SECTOR_STORE_UNUSED, &sector_oldest_addr, &last_sector_status,
                 check_oldest_addr_cb, false);
         db_oldest_addr(db) = sector_oldest_addr;
-        FDB_DEBUG("The oldest addr is @0x%08" PRIX32 "\n", db_oldest_addr(db));
+        FDB_DEBUG("The oldest addr is @0x%08" PRIX32 "\r\n", db_oldest_addr(db));
     }
     /* there is at least one empty sector for GC. */
     FDB_ASSERT((FDB_GC_EMPTY_SEC_THRESHOLD > 0 && FDB_GC_EMPTY_SEC_THRESHOLD < SECTOR_NUM))
@@ -1752,7 +1752,7 @@ fdb_err_t fdb_kvdb_init(fdb_kvdb_t db, const char *name, const char *path, struc
     }
 #endif /* FDB_KV_USING_CACHE */
 
-    FDB_DEBUG("KVDB size is %" PRIu32 " bytes.\n", db_max_size(db));
+    FDB_DEBUG("KVDB size is %" PRIu32 " bytes.\r\n", db_max_size(db));
 
     result = _fdb_kv_load(db);
 

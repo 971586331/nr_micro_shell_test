@@ -25,6 +25,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <elog.h>
+#include <flashdb.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,6 +48,18 @@
 /* USER CODE BEGIN PV */
 osSemaphoreId_t sem1;
 uint8_t cmd_buff[CMD_BUFF_SIZE];
+/* KVDB object */
+struct fdb_kvdb kvdb = { 0 };
+
+uint32_t boot_count = 0;
+time_t boot_time[10] = {0, 1, 2, 3};
+/* default KV nodes */
+static struct fdb_default_kv_node default_kv_table[] = {
+        {"username", "armink", 0}, /* string KV */
+        {"password", "123456", 0}, /* string KV */
+        {"boot_count", &boot_count, sizeof(boot_count)}, /* int type KV */
+        {"boot_time", &boot_time, sizeof(boot_time)},    /* int array type KV */
+};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -70,6 +83,44 @@ void EasyLogger_Init()
 	elog_set_fmt(ELOG_LVL_VERBOSE, ELOG_FMT_ALL & ~(ELOG_FMT_FUNC | ELOG_FMT_T_INFO | ELOG_FMT_P_INFO));
 	/* start EasyLogger */
 	elog_start();
+}
+
+static void lock(fdb_db_t db)
+{
+    __disable_irq();
+}
+
+static void unlock(fdb_db_t db)
+{
+    __enable_irq();
+}
+
+int FlashDB_Init()
+{
+  fdb_err_t result;
+  /* KVDB Sample */
+  struct fdb_default_kv default_kv;
+
+  default_kv.kvs = default_kv_table;
+  default_kv.num = sizeof(default_kv_table) / sizeof(default_kv_table[0]);
+  /* set the lock and unlock function if you want */
+  fdb_kvdb_control(&kvdb, FDB_KVDB_CTRL_SET_LOCK, (void *)lock);
+  fdb_kvdb_control(&kvdb, FDB_KVDB_CTRL_SET_UNLOCK, (void *)unlock);
+  /* Key-Value database initialization
+    *
+    *       &kvdb: database object
+    *       "env": database name
+    * "fdb_kvdb1": The flash partition name base on FAL. Please make sure it's in FAL partition table.
+    *              Please change to YOUR partition name.
+    * &default_kv: The default KV nodes. It will auto add to KVDB when first initialize successfully.
+    *        NULL: The user data if you need, now is empty.
+    */
+  result = fdb_kvdb_init(&kvdb, "env", "fdb_kvdb1", &default_kv, NULL);
+
+  if (result != FDB_NO_ERR) {
+      return -1;
+  }
+	return 0;
 }
 /* USER CODE END 0 */
 
@@ -104,6 +155,7 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   EasyLogger_Init();
+  FlashDB_Init();
   /* USER CODE END 2 */
 
   /* Init scheduler */
