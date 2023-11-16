@@ -27,6 +27,7 @@
  */
  
 #include <elog.h>
+#include <stdio.h>
 
 /**
  * EasyLogger port initialize
@@ -60,7 +61,7 @@ void elog_port_deinit(void) {
 void elog_port_output(const char *log, size_t size) {
     
     /* add your code here */
-    
+    printf("%.*s", size, log);
 }
 
 /**
@@ -86,10 +87,13 @@ void elog_port_output_unlock(void) {
  *
  * @return current time
  */
+char time_str[10] = {0};
 const char *elog_port_get_time(void) {
     
     /* add your code here */
-    
+    uint32_t num = xTaskGetTickCount();
+    sprintf(time_str, "%d.%d", num/1000, num%1000);
+    return time_str;
 }
 
 /**
@@ -100,7 +104,7 @@ const char *elog_port_get_time(void) {
 const char *elog_port_get_p_info(void) {
     
     /* add your code here */
-    
+    return "";
 }
 
 /**
@@ -111,5 +115,5 @@ const char *elog_port_get_p_info(void) {
 const char *elog_port_get_t_info(void) {
     
     /* add your code here */
-    
+    return "";
 }
